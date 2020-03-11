@@ -31,6 +31,7 @@ namespace IdentityServer
         public void ConfigureServices(IServiceCollection services)
         {
             // uncomment, if you want to add an MVC-based UI
+            services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_3_0);
             services.AddControllersWithViews();
 
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
@@ -71,10 +72,17 @@ namespace IdentityServer
                 options.ConfigureDbContext = b => b.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
                 options.EnableTokenCleanup = true;
             })
-            .AddAspNetIdentity<ApplicationUser>(); 
+            .AddAspNetIdentity<ApplicationUser>();
 
-            // not recommended for production - you need to store your key material somewhere secure
-            builder.AddDeveloperSigningCredential();
+            if (Environment.IsDevelopment())
+            {
+                // not recommended for production - you need to store your key material somewhere secure
+                builder.AddDeveloperSigningCredential();
+            }
+            else
+            {
+                throw new Exception("need to configure key material");
+            }
         }
 
         public void Configure(IApplicationBuilder app)
