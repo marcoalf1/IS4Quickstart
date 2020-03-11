@@ -15,10 +15,11 @@ namespace IdentityServer
 {
     public class Startup
     {
-        public IHostingEnvironment Environment { get; }
+        //public IHostingEnvironment Environment { get; } // Obsolete
+        public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
 
-        public Startup(IHostingEnvironment environment, IConfiguration configuration)
+        public Startup(IWebHostEnvironment environment, IConfiguration configuration)
         {
             Environment = environment;
             Configuration = configuration;
@@ -51,7 +52,7 @@ namespace IdentityServer
             {
                 options.ConfigureDbContext = b => b.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
             })
-            .AddOperationalStore(options =>
+            .AddOperationalStore(options => 
             {
                 options.ConfigureDbContext = b => b.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
                 options.EnableTokenCleanup = true;
